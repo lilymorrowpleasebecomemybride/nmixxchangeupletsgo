@@ -295,6 +295,26 @@
       cursor: pointer;
     }
 
+    /* MODE BARE (khusus Wayground): tanpa status bar palsu, ikon info, dan kotak menu.
+       Hanya menyisakan jarak safe-area supaya konten tidak tertutup notch / home indicator. */
+    body.bare-mode {
+      background: #ffffff;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    body.bare-mode .status-bar,
+    body.bare-mode .info-icon {
+      display: none;
+    }
+    body.bare-mode .menu-wrapper {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      background: #ffffff;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
     /* EMBEDDED IFRAME FOR EXAMS (Di dalam kotak) */
     #examFrameContainer {
       display: none;
@@ -393,7 +413,8 @@
           <h4 style="font-weight: bold;">Takut akan TUHAN adalah permulaan pengetahuan</h4>
         </marquee>
         <div class="datetime" onclick="handleSecretTap()"></div>
-        <div class="exam-link"><button type="button" class="btn" onclick="window.openExam('https://labexam-rho.vercel.app/kelas_xii.html?key=AksesKhususGoogleSites2026')">Buka Asesmen Kelas XII</button></div>
+        <div class="exam-link"><button type="button" class="btn" onclick="window.openExam('https://labexam-rho.vercel.app/kelas_xii.html?key=AksesKhususGoogleSites2026')">Buka Asesmen Kelas XII</button>
+          <button type="button" class="btn" onclick="window.openExam('https://wayground.com/join/', true)">Wayground</button></div>
       </div>
     </div>
     
@@ -466,6 +487,7 @@
     }
     
     if(document.getElementById('examFrameContainer').style.display === 'block') {
+      document.body.classList.remove('bare-mode');
       document.getElementById('examFrameContainer').style.display = 'none';
       document.getElementById('examIframe').src = 'about:blank';
       document.getElementById('mainContainer').style.display = 'block'; 
@@ -474,12 +496,13 @@
 
   // BUKA SOAL
   // Diubah dari fungsi biasa ke global window function agar elemen kloningan bisa memanggilnya
-  window.openExam = function(url) {
+  window.openExam = function(url, bare) {
     document.getElementById('mainContainer').style.display = 'none';
     const frameContainer = document.getElementById('examFrameContainer');
     const iframe = document.getElementById('examIframe');
     iframe.src = url;
     frameContainer.style.display = 'block';
+    document.body.classList.toggle('bare-mode', !!bare);
   };
 
   // TOGGLE ACCORDION
@@ -492,6 +515,7 @@
 
   // PINDAH TAB NAVIGASI
   function switchTab(tabId, btn) {
+    document.body.classList.remove('bare-mode');
     document.getElementById('examFrameContainer').style.display = 'none';
     document.getElementById('examIframe').src = 'about:blank';
     document.getElementById('mainContainer').style.display = 'block';
